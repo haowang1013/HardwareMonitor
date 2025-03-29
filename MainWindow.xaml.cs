@@ -34,7 +34,20 @@ namespace HardwareMonitor
             SetupTimer();
 
             // Make the window always stay on top of other windows
+            this.Topmost = false;
+            // Ensure checkbox matches initial state
+            AlwaysOnTopCheckBox.IsChecked = this.Topmost;
+        }
+
+        // Add these event handlers for the Always on Top checkbox
+        private void AlwaysOnTopCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
             this.Topmost = true;
+        }
+
+        private void AlwaysOnTopCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.Topmost = false;
         }
 
         private void InitializeHardwareMonitor()

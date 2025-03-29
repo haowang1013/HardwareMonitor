@@ -24,7 +24,14 @@
         </Grid.RowDefinitions>
         
         <!-- Title -->
-        <TextBlock Grid.Row="0" Text="Hardware Monitor" FontSize="24" FontWeight="Bold" Margin="10,10,10,10" Foreground="White"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Hardware Monitor" FontSize="24" FontWeight="Bold" Margin="10,10,10,10" Foreground="White"/>
+            <CheckBox Grid.Column="1" x:Name="AlwaysOnTopCheckBox" Content="Always on Top" Margin="10,15,10,10" Foreground="White" IsChecked="True" Checked="AlwaysOnTopCheckBox_Checked" Unchecked="AlwaysOnTopCheckBox_Unchecked"/>
+        </Grid>
         
         <!-- Main content in two columns -->
         <Grid Grid.Row="1" Margin="5,0">
