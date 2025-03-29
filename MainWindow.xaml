@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HardwareMonitor"
         mc:Ignorable="d"
-        Title="Hardware Monitor" Height="800" Width="600" 
+        Title="Hardware Monitor" Height="900" Width="800" 
         Background="#1E1E1E" Foreground="White">
     
     <!-- Main layout with a single Grid as the root element -->
@@ -33,6 +33,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -143,8 +144,24 @@
                 <Canvas x:Name="GpuTempGraph" Height="100" Background="#2E2E2E" Margin="5"/>
             </GroupBox>
             
-            <!-- System Memory Graph - Left Column -->
+            <!-- CPU Power Graph - Left Column -->
             <GroupBox Grid.Row="3" Grid.Column="0" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <GroupBox.Header>
+                    <TextBlock x:Name="CpuPowerGraphTitle" Text="CPU Power History" Foreground="White"/>
+                </GroupBox.Header>
+                <Canvas x:Name="CpuPowerGraph" Height="100" Background="#2E2E2E" Margin="5"/>
+            </GroupBox>
+            
+            <!-- GPU Power Graph - Right Column -->
+            <GroupBox Grid.Row="3" Grid.Column="1" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <GroupBox.Header>
+                    <TextBlock x:Name="GpuPowerGraphTitle" Text="GPU Power History" Foreground="White"/>
+                </GroupBox.Header>
+                <Canvas x:Name="GpuPowerGraph" Height="100" Background="#2E2E2E" Margin="5"/>
+            </GroupBox>
+            
+            <!-- System Memory Graph - Left Column -->
+            <GroupBox Grid.Row="4" Grid.Column="0" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
                 <GroupBox.Header>
                     <TextBlock x:Name="MemoryUsageGraphTitle" Text="System Memory History" Foreground="White"/>
                 </GroupBox.Header>
@@ -152,7 +169,7 @@
             </GroupBox>
             
             <!-- GPU Memory Graph - Right Column -->
-            <GroupBox Grid.Row="3" Grid.Column="1" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+            <GroupBox Grid.Row="4" Grid.Column="1" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
                 <GroupBox.Header>
                     <TextBlock x:Name="GpuMemoryGraphTitle" Text="GPU Memory History" Foreground="White"/>
                 </GroupBox.Header>

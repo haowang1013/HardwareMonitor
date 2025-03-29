@@ -17,8 +17,10 @@ namespace HardwareMonitor
         // Lists to store historical data
         private List<float> cpuLoadHistory = new List<float>();
         private List<float> cpuTempHistory = new List<float>(); // New list for CPU temperature
+        private List<float> cpuPowerHistory = new List<float>(); // New list for CPU power
         private List<float> gpuLoadHistory = new List<float>();
         private List<float> gpuTempHistory = new List<float>(); // New list for GPU temperature
+        private List<float> gpuPowerHistory = new List<float>(); // New list for GPU power
         private List<float> gpuMemoryHistory = new List<float>();
         private List<float> memoryUsageHistory = new List<float>();
         
@@ -62,9 +64,6 @@ namespace HardwareMonitor
         private void UpdateHardwareInfo()
         {
             computer.Hardware[0].Update();  // Update CPU info
-
-            float cpuLoad = 0;
-            float cpuTemp = 0;
 
             try
             {
@@ -154,6 +153,17 @@ namespace HardwareMonitor
                     CpuTempGraphTitle.Text = $"CPU Temperature History - Current: {temperature:F1}°C";
                     DrawTempGraph(CpuTempGraph, cpuTempHistory, Colors.OrangeRed);
                 }
+                
+                // Add CPU power to history and update graph
+                if (power.HasValue)
+                {
+                    cpuPowerHistory.Add(power.Value);
+                    if (cpuPowerHistory.Count > MAX_HISTORY_POINTS)
+                        cpuPowerHistory.RemoveAt(0);
+                        
+                    CpuPowerGraphTitle.Text = $"CPU Power History - Current: {power:F1}W";
+                    DrawPowerGraph(CpuPowerGraph, cpuPowerHistory, Colors.Purple);
+                }
             });
         }
 
@@ -230,6 +240,17 @@ namespace HardwareMonitor
                         
                     GpuTempGraphTitle.Text = $"GPU Temperature History - Current: {temperature:F1}°C";
                     DrawTempGraph(GpuTempGraph, gpuTempHistory, Colors.Crimson);
+                }
+                
+                // Add GPU power to history and update graph
+                if (power.HasValue)
+                {
+                    gpuPowerHistory.Add(power.Value);
+                    if (gpuPowerHistory.Count > MAX_HISTORY_POINTS)
+                        gpuPowerHistory.RemoveAt(0);
+                        
+                    GpuPowerGraphTitle.Text = $"GPU Power History - Current: {power:F1}W";
+                    DrawPowerGraph(GpuPowerGraph, gpuPowerHistory, Colors.DarkOrchid);
                 }
 
                 if (memoryUsed.HasValue && memoryTotal.HasValue)
@@ -351,7 +372,7 @@ namespace HardwareMonitor
                         // Code commented out
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     CpuMemoryText.Text = "Memory info unavailable";
                 }
@@ -375,9 +396,32 @@ namespace HardwareMonitor
             double canvasWidth = canvas.ActualWidth;
             double canvasHeight = canvas.ActualHeight;
         
-            // Fixed temperature range: 30-100 degrees
-            float minTemp = 30;
-            float maxTemp = 100;
+            // Find min and max temperature values in the data
+            float minTemp = float.MaxValue;
+            float maxTemp = float.MinValue;
+            foreach (var temp in dataPoints)
+            {
+                if (temp < minTemp) minTemp = temp;
+                if (temp > maxTemp) maxTemp = temp;
+            }
+            
+            // Add 20% buffer to the range
+            float range = maxTemp - minTemp;
+            float buffer = range * 0.2f;
+            
+            // Set adaptive bounds with buffer (ensure minTemp doesn't go below 0)
+            minTemp = Math.Max(0, minTemp - buffer);
+            maxTemp = maxTemp + buffer;
+            
+            // Ensure we have a reasonable range (at least 10 degrees)
+            if (maxTemp - minTemp < 10)
+            {
+                float midPoint = (maxTemp + minTemp) / 2;
+                minTemp = midPoint - 5;
+                maxTemp = midPoint + 5;
+                minTemp = Math.Max(0, minTemp); // Ensure minTemp doesn't go below 0
+            }
+            
             float tempRange = maxTemp - minTemp;
         
             // Create polyline for the graph
@@ -397,8 +441,12 @@ namespace HardwareMonitor
         
             canvas.Children.Add(polyline);
         
-            // Add horizontal grid lines at 40, 60, 80, and 100 degrees
-            for (int temp = 40; temp <= 100; temp += 20)
+            // Calculate appropriate grid line intervals based on the temperature range
+            int gridStep = CalculateGridStep(tempRange);
+            int startTemp = (int)Math.Ceiling(minTemp / gridStep) * gridStep;
+            
+            // Add horizontal grid lines at appropriate intervals
+            for (int temp = startTemp; temp <= maxTemp; temp += gridStep)
             {
                 double y = canvasHeight - ((temp - minTemp) / tempRange * canvasHeight);
                 Line gridLine = new Line
@@ -413,7 +461,7 @@ namespace HardwareMonitor
                 };
                 canvas.Children.Add(gridLine);
         
-                // Add temperature label - moved to right side to avoid overlap with title
+                // Add temperature label
                 TextBlock label = new TextBlock
                 {
                     Text = $"{temp}°C",
@@ -421,39 +469,54 @@ namespace HardwareMonitor
                     FontSize = 10
                 };
                 
-                // Position labels on the right side of the graph instead of the left
+                // Position labels on the right side of the graph
                 Canvas.SetRight(label, 5);
                 Canvas.SetTop(label, y - 7); // Centered vertically on the line
                 canvas.Children.Add(label);
             }
             
-            // Add warning threshold line at 80°C
-            double warningY = canvasHeight - ((80 - minTemp) / tempRange * canvasHeight);
-            Line warningLine = new Line
+            // Add warning threshold line at 80°C if it's within our range
+            if (80 >= minTemp && 80 <= maxTemp)
             {
-                X1 = 0,
-                Y1 = warningY,
-                X2 = canvasWidth,
-                Y2 = warningY,
-                Stroke = new SolidColorBrush(Colors.Yellow),
-                StrokeThickness = 1,
-                StrokeDashArray = new DoubleCollection { 2, 2 }
-            };
-            canvas.Children.Add(warningLine);
+                double warningY = canvasHeight - ((80 - minTemp) / tempRange * canvasHeight);
+                Line warningLine = new Line
+                {
+                    X1 = 0,
+                    Y1 = warningY,
+                    X2 = canvasWidth,
+                    Y2 = warningY,
+                    Stroke = new SolidColorBrush(Colors.Yellow),
+                    StrokeThickness = 1,
+                    StrokeDashArray = new DoubleCollection { 2, 2 }
+                };
+                canvas.Children.Add(warningLine);
+            }
             
-            // Add critical threshold line at 90°C
-            double criticalY = canvasHeight - ((90 - minTemp) / tempRange * canvasHeight);
-            Line criticalLine = new Line
+            // Add critical threshold line at 90°C if it's within our range
+            if (90 >= minTemp && 90 <= maxTemp)
             {
-                X1 = 0,
-                Y1 = criticalY,
-                X2 = canvasWidth,
-                Y2 = criticalY,
-                Stroke = new SolidColorBrush(Colors.Red),
-                StrokeThickness = 1,
-                StrokeDashArray = new DoubleCollection { 2, 2 }
-            };
-            canvas.Children.Add(criticalLine);
+                double criticalY = canvasHeight - ((90 - minTemp) / tempRange * canvasHeight);
+                Line criticalLine = new Line
+                {
+                    X1 = 0,
+                    Y1 = criticalY,
+                    X2 = canvasWidth,
+                    Y2 = criticalY,
+                    Stroke = new SolidColorBrush(Colors.Red),
+                    StrokeThickness = 1,
+                    StrokeDashArray = new DoubleCollection { 2, 2 }
+                };
+                canvas.Children.Add(criticalLine);
+            }
+        }
+        
+        // Helper method to calculate appropriate grid step size
+        private int CalculateGridStep(float range)
+        {
+            if (range <= 20) return 5;
+            if (range <= 50) return 10;
+            if (range <= 100) return 20;
+            return 25;
         }
 
         private void DrawGraph(Canvas canvas, List<float> dataPoints, Color lineColor)
@@ -508,18 +571,122 @@ namespace HardwareMonitor
                 };
                 canvas.Children.Add(gridLine);
 
-                // Add percentage label
+                // Add percentage label - modified to be on the right with white color
                 TextBlock label = new TextBlock
                 {
                     Text = $"{100 - (i * 25)}%",
-                    Foreground = new SolidColorBrush(Colors.Black),
+                    Foreground = new SolidColorBrush(Colors.White),
                     FontSize = 10
                 };
-                Canvas.SetLeft(label, 5);
-                Canvas.SetTop(label, y - 15);
+                
+                // Position labels on the right side of the graph
+                Canvas.SetRight(label, 5);
+                Canvas.SetTop(label, y - 7); // Centered vertically on the line
                 canvas.Children.Add(label);
             }
         }
+
+        private void DrawPowerGraph(Canvas canvas, List<float> dataPoints, Color lineColor)
+        {
+            canvas.Children.Clear();
+        
+            if (dataPoints.Count < 2)
+                return;
+        
+            double canvasWidth = canvas.ActualWidth;
+            double canvasHeight = canvas.ActualHeight;
+        
+            // Find min and max power values in the data
+            float minPower = float.MaxValue;
+            float maxPower = float.MinValue;
+            foreach (var power in dataPoints)
+            {
+                if (power < minPower) minPower = power;
+                if (power > maxPower) maxPower = power;
+            }
+            
+            // Add 20% buffer to the range
+            float range = maxPower - minPower;
+            float buffer = range * 0.2f;
+            
+            // Set adaptive bounds with buffer (ensure minPower doesn't go below 0)
+            minPower = Math.Max(0, minPower - buffer);
+            maxPower = maxPower + buffer;
+            
+            // Ensure we have a reasonable range (at least 5 watts)
+            if (maxPower - minPower < 5)
+            {
+                float midPoint = (maxPower + minPower) / 2;
+                minPower = Math.Max(0, midPoint - 2.5f);
+                maxPower = midPoint + 2.5f;
+            }
+            
+            float powerRange = maxPower - minPower;
+        
+            // Create polyline for the graph
+            Polyline polyline = new Polyline();
+            polyline.Stroke = new SolidColorBrush(lineColor);
+            polyline.StrokeThickness = 2;
+        
+            // Add points to the polyline
+            for (int i = 0; i < dataPoints.Count; i++)
+            {
+                double x = i * (canvasWidth / (MAX_HISTORY_POINTS - 1));
+                // Clamp power to our range and scale it
+                float clampedPower = Math.Max(minPower, Math.Min(maxPower, dataPoints[i]));
+                double y = canvasHeight - ((clampedPower - minPower) / powerRange * canvasHeight);
+                polyline.Points.Add(new Point(x, y));
+            }
+        
+            canvas.Children.Add(polyline);
+        
+            // Calculate appropriate grid line intervals based on the power range
+            int gridStep = CalculatePowerGridStep(powerRange);
+            int startPower = (int)Math.Ceiling(minPower / gridStep) * gridStep;
+            
+            // Add horizontal grid lines at appropriate intervals
+            for (int power = startPower; power <= maxPower; power += gridStep)
+            {
+                double y = canvasHeight - ((power - minPower) / powerRange * canvasHeight);
+                Line gridLine = new Line
+                {
+                    X1 = 0,
+                    Y1 = y,
+                    X2 = canvasWidth,
+                    Y2 = y,
+                    Stroke = new SolidColorBrush(Colors.Gray),
+                    StrokeThickness = 0.5,
+                    StrokeDashArray = new DoubleCollection { 4, 2 }
+                };
+                canvas.Children.Add(gridLine);
+        
+                // Add power label
+                TextBlock label = new TextBlock
+                {
+                    Text = $"{power}W",
+                    Foreground = new SolidColorBrush(Colors.White),
+                    FontSize = 10
+                };
+                
+                // Position labels on the right side of the graph
+                Canvas.SetRight(label, 5);
+                Canvas.SetTop(label, y - 7); // Centered vertically on the line
+                canvas.Children.Add(label);
+            }
+        }
+        
+        // Helper method to calculate appropriate grid step size for power
+        private int CalculatePowerGridStep(float range)
+        {
+            if (range <= 10) return 2;
+            if (range <= 25) return 5;
+            if (range <= 50) return 10;
+            if (range <= 100) return 20;
+            return 50;
+        }
+
+        // Remove this duplicate DrawGraph method (lines 686-736)
+        // The original DrawGraph method at line 586 will be kept
     }
 
     public static class Extensions
