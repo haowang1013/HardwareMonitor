@@ -1,0 +1,163 @@
+<Window x:Class="HardwareMonitor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HardwareMonitor"
+        mc:Ignorable="d"
+        Title="Hardware Monitor" Height="800" Width="600" 
+        Background="#1E1E1E" Foreground="White">
+    
+    <!-- Main layout with a single Grid as the root element -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="Hardware Monitor" FontSize="24" FontWeight="Bold" Margin="10,10,10,10" Foreground="White"/>
+        
+        <!-- Main content in two columns -->
+        <Grid Grid.Row="1" Margin="5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- CPU Stats Section - Left Column -->
+            <GroupBox Grid.Row="0" Grid.Column="0" Header="CPU" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Brand/Model:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="CpuBrandText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Clock Speed:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="CpuClockText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Load:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="CpuLoadText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Temperature:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="CpuTempText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Power:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" x:Name="CpuPowerText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Memory:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="5" Grid.Column="1" x:Name="CpuMemoryText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                </Grid>
+            </GroupBox>
+            
+            <!-- GPU Stats Section - Right Column -->
+            <GroupBox Grid.Row="0" Grid.Column="1" Header="GPU" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Brand/Model:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="GpuBrandText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Clock Speed:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="GpuClockText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Load:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="GpuLoadText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Temperature:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="GpuTempText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Power:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" x:Name="GpuPowerText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                    
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Memory:" Margin="5" Foreground="White"/>
+                    <TextBlock Grid.Row="5" Grid.Column="1" x:Name="GpuMemoryText" Text="N/A" Margin="5" Foreground="#00BFFF"/>
+                </Grid>
+            </GroupBox>
+            
+            <!-- CPU Load Graph - Left Column -->
+            <GroupBox Grid.Row="1" Grid.Column="0" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <GroupBox.Header>
+                    <TextBlock x:Name="CpuLoadGraphTitle" Text="CPU Load History" Foreground="White"/>
+                </GroupBox.Header>
+                <Canvas x:Name="CpuLoadGraph" Height="100" Background="#2E2E2E" Margin="5"/>
+            </GroupBox>
+            
+            <!-- GPU Load Graph - Right Column -->
+            <GroupBox Grid.Row="1" Grid.Column="1" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <GroupBox.Header>
+                    <TextBlock x:Name="GpuLoadGraphTitle" Text="GPU Load History" Foreground="White"/>
+                </GroupBox.Header>
+                <Canvas x:Name="GpuLoadGraph" Height="100" Background="#2E2E2E" Margin="5"/>
+            </GroupBox>
+            
+            <!-- CPU Temperature Graph - Left Column -->
+            <GroupBox Grid.Row="2" Grid.Column="0" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <GroupBox.Header>
+                    <TextBlock x:Name="CpuTempGraphTitle" Text="CPU Temperature History" Foreground="White"/>
+                </GroupBox.Header>
+                <Canvas x:Name="CpuTempGraph" Height="100" Background="#2E2E2E" Margin="5"/>
+            </GroupBox>
+            
+            <!-- GPU Temperature Graph - Right Column -->
+            <GroupBox Grid.Row="2" Grid.Column="1" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <GroupBox.Header>
+                    <TextBlock x:Name="GpuTempGraphTitle" Text="GPU Temperature History" Foreground="White"/>
+                </GroupBox.Header>
+                <Canvas x:Name="GpuTempGraph" Height="100" Background="#2E2E2E" Margin="5"/>
+            </GroupBox>
+            
+            <!-- System Memory Graph - Left Column -->
+            <GroupBox Grid.Row="3" Grid.Column="0" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <GroupBox.Header>
+                    <TextBlock x:Name="MemoryUsageGraphTitle" Text="System Memory History" Foreground="White"/>
+                </GroupBox.Header>
+                <Canvas x:Name="MemoryUsageGraph" Height="100" Background="#2E2E2E" Margin="5"/>
+            </GroupBox>
+            
+            <!-- GPU Memory Graph - Right Column -->
+            <GroupBox Grid.Row="3" Grid.Column="1" Margin="5" Foreground="White" BorderBrush="#3E3E3E">
+                <GroupBox.Header>
+                    <TextBlock x:Name="GpuMemoryGraphTitle" Text="GPU Memory History" Foreground="White"/>
+                </GroupBox.Header>
+                <Canvas x:Name="GpuMemoryGraph" Height="100" Background="#2E2E2E" Margin="5"/>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>
