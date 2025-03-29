@@ -139,7 +139,7 @@ namespace HardwareMonitor
                         cpuLoadHistory.RemoveAt(0);
 
                     // Update graph title with latest value
-                    CpuLoadGraphTitle.Text = $"CPU Load History - Current: {load:F1}%";
+                    CpuLoadGraphTitle.Text = $"CPU Load - {load:F1}%";
                     DrawGraph(CpuLoadGraph, cpuLoadHistory, Colors.Red);
                 }
         
@@ -150,7 +150,7 @@ namespace HardwareMonitor
                     if (cpuTempHistory.Count > MAX_HISTORY_POINTS)
                         cpuTempHistory.RemoveAt(0);
                         
-                    CpuTempGraphTitle.Text = $"CPU Temperature History - Current: {temperature:F1}°C";
+                    CpuTempGraphTitle.Text = $"CPU Temperature - {temperature:F1}°C";
                     DrawTempGraph(CpuTempGraph, cpuTempHistory, Colors.OrangeRed);
                 }
                 
@@ -161,7 +161,7 @@ namespace HardwareMonitor
                     if (cpuPowerHistory.Count > MAX_HISTORY_POINTS)
                         cpuPowerHistory.RemoveAt(0);
                         
-                    CpuPowerGraphTitle.Text = $"CPU Power History - Current: {power:F1}W";
+                    CpuPowerGraphTitle.Text = $"CPU Power - {power:F1}W";
                     DrawPowerGraph(CpuPowerGraph, cpuPowerHistory, Colors.Purple);
                 }
             });
@@ -227,7 +227,7 @@ namespace HardwareMonitor
                     if (gpuLoadHistory.Count > MAX_HISTORY_POINTS)
                         gpuLoadHistory.RemoveAt(0);
                         
-                    GpuLoadGraphTitle.Text = $"GPU Load History - Current: {load:F1}%";
+                    GpuLoadGraphTitle.Text = $"GPU Load - {load:F1}%";
                     DrawGraph(GpuLoadGraph, gpuLoadHistory, Colors.Orange);
                 }
                 
@@ -238,7 +238,7 @@ namespace HardwareMonitor
                     if (gpuTempHistory.Count > MAX_HISTORY_POINTS)
                         gpuTempHistory.RemoveAt(0);
                         
-                    GpuTempGraphTitle.Text = $"GPU Temperature History - Current: {temperature:F1}°C";
+                    GpuTempGraphTitle.Text = $"GPU Temperature - {temperature:F1}°C";
                     DrawTempGraph(GpuTempGraph, gpuTempHistory, Colors.Crimson);
                 }
                 
@@ -249,7 +249,7 @@ namespace HardwareMonitor
                     if (gpuPowerHistory.Count > MAX_HISTORY_POINTS)
                         gpuPowerHistory.RemoveAt(0);
                         
-                    GpuPowerGraphTitle.Text = $"GPU Power History - Current: {power:F1}W";
+                    GpuPowerGraphTitle.Text = $"GPU Power - {power:F1}W";
                     DrawPowerGraph(GpuPowerGraph, gpuPowerHistory, Colors.DarkOrchid);
                 }
 
@@ -268,7 +268,7 @@ namespace HardwareMonitor
                         gpuMemoryHistory.RemoveAt(0);
                     
                     // Update graph title with latest value
-                    GpuMemoryGraphTitle.Text = $"GPU Memory Usage History - Current: {percentage:F1}%";
+                    GpuMemoryGraphTitle.Text = $"GPU Memory Usage - {percentage:F1}%";
                     DrawGraph(GpuMemoryGraph, gpuMemoryHistory, Colors.Green);
                 }
                 else
@@ -283,7 +283,7 @@ namespace HardwareMonitor
                             gpuMemoryHistory.RemoveAt(0);
                         
                         // Update graph title with latest value
-                        GpuMemoryGraphTitle.Text = $"GPU Memory Usage History - Current: {memoryLoad:F1}%";
+                        GpuMemoryGraphTitle.Text = $"GPU Memory Usage - {memoryLoad:F1}%";
                         DrawGraph(GpuMemoryGraph, gpuMemoryHistory, Colors.Green);
                     }
                 }
@@ -344,7 +344,7 @@ namespace HardwareMonitor
                             memoryUsageHistory.RemoveAt(0);
 
                         // Update graph title with latest value
-                        MemoryUsageGraphTitle.Text = $"System Memory Usage History - Current: {percentage:F1}%";
+                        MemoryUsageGraphTitle.Text = $"System Memory Usage - {percentage:F1}%";
                         DrawGraph(MemoryUsageGraph, memoryUsageHistory, Colors.Blue);
                     }
                     else if (memoryUsed.HasValue)
@@ -364,7 +364,7 @@ namespace HardwareMonitor
                             memoryUsageHistory.RemoveAt(0);
 
                         // Update graph title with latest value
-                        MemoryUsageGraphTitle.Text = $"System Memory Usage History - Current: {memoryLoad:F1}%";
+                        MemoryUsageGraphTitle.Text = $"System Memory Usage - {memoryLoad:F1}%";
                         DrawGraph(MemoryUsageGraph, memoryUsageHistory, Colors.Blue);
                     }
                     else
