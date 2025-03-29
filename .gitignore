@@ -47,3 +47,4 @@ Desktop.ini
 
 # Project specific
 # Add any project-specific files or directories to ignore here
+artifacts/
