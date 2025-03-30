@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging; // Add this for BitmapImage
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using LibreHardwareMonitor.Hardware;
@@ -37,6 +38,9 @@ namespace HardwareMonitor
             this.Topmost = false;
             // Ensure checkbox matches initial state
             AlwaysOnTopCheckBox.IsChecked = this.Topmost;
+            
+            // Set the window icon (optional, as the app icon is already set in the project file)
+            this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/HardwareMonitor.ico"));
         }
 
         // Add these event handlers for the Always on Top checkbox
