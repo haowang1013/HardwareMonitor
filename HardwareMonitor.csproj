@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <ApplicationManifestFile>app.manifest</ApplicationManifestFile>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- Add these lines for the app icon -->
     <ApplicationIcon>Resources\HardwareMonitor.ico</ApplicationIcon>
   </PropertyGroup>
