@@ -12,16 +12,17 @@ namespace HardwareMonitor
 {
     public partial class MainWindow : Window
     {
-        private Computer computer;
-        private DispatcherTimer timer;
+        // Use nullable reference types instead of 'required'
+        private Computer? computer;
+        private DispatcherTimer? timer;
 
         // Lists to store historical data
         private List<float> cpuLoadHistory = new List<float>();
-        private List<float> cpuTempHistory = new List<float>(); // New list for CPU temperature
-        private List<float> cpuPowerHistory = new List<float>(); // New list for CPU power
+        private List<float> cpuTempHistory = new List<float>();
+        private List<float> cpuPowerHistory = new List<float>();
         private List<float> gpuLoadHistory = new List<float>();
-        private List<float> gpuTempHistory = new List<float>(); // New list for GPU temperature
-        private List<float> gpuPowerHistory = new List<float>(); // New list for GPU power
+        private List<float> gpuTempHistory = new List<float>();
+        private List<float> gpuPowerHistory = new List<float>();
         private List<float> gpuMemoryHistory = new List<float>();
         private List<float> memoryUsageHistory = new List<float>();
         
@@ -73,13 +74,17 @@ namespace HardwareMonitor
             timer.Start();
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        // Fix the nullability of the Timer_Tick method parameters
+        private void Timer_Tick(object? sender, EventArgs e)
         {
             UpdateHardwareInfo();
         }
 
         private void UpdateHardwareInfo()
         {
+            // Add null check to avoid null reference exceptions
+            if (computer == null) return;
+            
             computer.Hardware[0].Update();  // Update CPU info
 
             try
@@ -398,8 +403,9 @@ namespace HardwareMonitor
 
         protected override void OnClosed(EventArgs e)
         {
-            timer.Stop();
-            computer.Close();
+            // Add null checks
+            timer?.Stop();
+            computer?.Close();
             base.OnClosed(e);
         }
 
