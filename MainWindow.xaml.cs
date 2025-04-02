@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging; // Add this for BitmapImage
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Threading.Tasks; // Add this line
 using LibreHardwareMonitor.Hardware;
 
 namespace HardwareMonitor
@@ -77,42 +78,43 @@ namespace HardwareMonitor
         // Fix the nullability of the Timer_Tick method parameters
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            UpdateHardwareInfo();
-        }
-
-        private void UpdateHardwareInfo()
-        {
-            // Add null check to avoid null reference exceptions
-            if (computer == null) return;
-            
-            computer.Hardware[0].Update();  // Update CPU info
-
-            try
+            // Run hardware monitoring in background
+            Task.Run(() =>
             {
-                computer.Hardware.ForEach(hardware =>
+                try
                 {
-                    hardware.Update();
-
-                    switch (hardware.HardwareType)
+                    // Add null check to avoid null reference exceptions
+                    if (computer == null) return;
+                    
+                    computer.Hardware.ForEach(hardware =>
                     {
-                        case HardwareType.Cpu:
-                            UpdateCpuInfo(hardware);
-                            break;
-                        case HardwareType.GpuNvidia:
-                        case HardwareType.GpuAmd:
-                        case HardwareType.GpuIntel:
-                            UpdateGpuInfo(hardware);
-                            break;
-                        case HardwareType.Memory:
-                            UpdateMemoryInfo(hardware);
-                            break;
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error updating hardware info: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                        hardware.Update();
+
+                        switch (hardware.HardwareType)
+                        {
+                            case HardwareType.Cpu:
+                                UpdateCpuInfo(hardware);
+                                break;
+                            case HardwareType.GpuNvidia:
+                            case HardwareType.GpuAmd:
+                            case HardwareType.GpuIntel:
+                                UpdateGpuInfo(hardware);
+                                break;
+                            case HardwareType.Memory:
+                                UpdateMemoryInfo(hardware);
+                                break;
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // Use Dispatcher to show message box from background thread
+                    Dispatcher.Invoke(() =>
+                    {
+                        MessageBox.Show($"Error updating hardware info: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    });
+                }
+            });
         }
 
         private void UpdateCpuInfo(IHardware hardware)
