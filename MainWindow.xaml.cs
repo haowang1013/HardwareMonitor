@@ -236,7 +236,16 @@ namespace HardwareMonitor
                 }
             }
 
-            Dispatcher.Invoke(() =>
+            var values = new List<float?> { clockSpeed, load, temperature, power, memoryUsed, memoryTotal, memoryLoad };
+            foreach (var value in values)
+            {
+                if (!value.HasValue)
+                {
+                    return;
+                }
+            }
+
+                Dispatcher.Invoke(() =>
             {
                 GpuBrandText.Text = gpuBrandModel;
                 GpuClockText.Text = clockSpeed.HasValue ? $"{clockSpeed:F2} MHz" : "N/A";
